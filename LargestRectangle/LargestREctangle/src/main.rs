@@ -9,42 +9,24 @@ use std::io::{self, BufRead, Write};
  * The function accepts INTEGER_ARRAY h as parameter.
  */
 
-
 fn largestRectangle(h: &[i32]) -> i64 {
     let n = h.len();
-
-    let mut stack: Vec<usize> = Vec::new();
     let mut max_area: i64 = 0;
 
-    for i in 0..=n {
-        let current_height = if i == n {
-            0
-        } else {
-            h[i]
-        };
+    for i in 0..n {
+        let mut min_height = h[i];
 
-        while let Some(&top_index) = stack.last() {
-            if h[top_index] > current_height {
-                stack.pop();
-
-                let height = h[top_index] as i64;
-
-                let width = if let Some(&previous_index) = stack.last() {
-                    i - previous_index - 1
-                } else {
-                    i
-                };
-
-                let area = height * width as i64;
-
-                max_area = max_area.max(area);
-            } else {
-                break;
+        for j in i..n {
+            if h[j] < min_height {
+                min_height = h[j];
             }
-        }
 
-        if i < n {
-            stack.push(i);
+            let width = (j - i + 1) as i64;
+            let area = min_height as i64 * width;
+
+            if area > max_area {
+                max_area = area;
+            }
         }
     }
 
